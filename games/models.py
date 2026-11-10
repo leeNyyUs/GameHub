@@ -24,6 +24,7 @@ class Game(models.Model):
     description = models.TextField()
     price = models.IntegerField()
     release_date = models.DateField()
+    cover = models.ImageField(upload_to='game_covers/', blank=True, null=True)
 
 
 class Purchase(models.Model):

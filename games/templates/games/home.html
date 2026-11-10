@@ -10,14 +10,19 @@
     <h2>Популярные игры</h2>
 
     {% for game in games %}
-        <div>
-            <h3>{{ game.name }}</h3>
-            <p>{{ game.description }}</p>
-            <p>Цена: {{ game.price }} сум</p>
-        </div>
-    {% empty %}
-        <p>Пока игр нет.</p>
-    {% endfor %}
+    <div id="game-card">
+        {% if game.cover %}
+            <img src="{{ game.cover.url }}" width="150">
+        {% endif %}
+        <h2>{{ game.name }}</h2>
+        <p>{{ game.description }}</p>
+        <p>{{ game.genre }}</p>
+        <p>{{ game.price }} сум</p>
+    </div>
+{% empty %}
+    <p>Игр пока нет.</p>
+{% endfor %}
+
 
 </body>
 </html>
