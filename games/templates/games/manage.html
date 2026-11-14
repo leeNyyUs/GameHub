@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление играми — GameStore</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0d12;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: #191923;
+            padding: 22px 6%;
+            border-bottom: 1px solid #30303a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #956cff;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        header a {
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 45px auto;
+            padding: 0 25px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 30px;
+        }
+
+        .add-btn {
+            background: #7950e8;
+            color: white;
+            padding: 13px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: .3s;
+        }
+
+        .add-btn:hover {
+            background: #956cff;
+        }
+
+        .table-box {
+            background: #191923;
+            border: 1px solid #30303a;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #30303a;
+        }
+
+        th {
+            color: #a78bfa;
+            font-size: 14px;
+        }
+
+        td {
+            color: #ccc;
+        }
+
+        .game-img {
+            width: 75px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .edit {
+            color: #a78bfa;
+            text-decoration: none;
+            margin-right: 12px;
+        }
+
+        .delete {
+            background: #e5484d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .delete:hover {
+            background: #ff6268;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #888;
+        }
+
+        @media(max-width: 600px) {
+            .top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">GameStore Admin.</div>
+    <a href="/">← На сайт</a>
+</header>
+
+<div class="container">
+
+    <div class="top">
+        <h1>Управление играми</h1>
+
+        <a href="{% url 'add_game' %}" class="add-btn">
+            + Добавить игру
+        </a>
+    </div>
+
+    <div class="table-box">
+        <table>
+            <thead>
+            <tr>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Жанр</th>
+                <th>Цена</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for game in games %}
+            <tr>
+                <td>
+                    {% if game.cover %}
+                    <img src="{{ game.cover.url }}" class="game-img">
+                    {% else %}
+                    Нет фото
+                    {% endif %}
+                </td>
+
+                <td>{{ game.name }}</td>
+                <td>{% for genre in game.genres.all %}
+                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ game.price }} сум</td>
+
+                <td>
+                    <a href="{% url 'edit_game' game.id %}" class="edit">
+                        Изменить
+                    </a>
+
+                    <form action="{% url 'delete_game' game.id %}"
+                          method="POST"
+                          style="display:inline;"
+                          onsubmit="return confirm('Удалить эту игру?')">
+
+                        {% csrf_token %}
+
+                        <button type="submit" class="delete">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="5" class="empty">
+                    Игр пока нет. Добавьте первую игру!
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

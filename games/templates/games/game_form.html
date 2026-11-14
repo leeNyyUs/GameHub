@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+
+    <style>
+        body {
+            background: #151326;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background: #211d38;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        h1 {
+            color: #a78bfa;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        select[multiple] {
+            height: 120px;
+        }
+
+        button, a {
+            display: inline-block;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #8b5cf6;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a {
+            background: #39334f;
+        }
+
+        button:hover {
+            background: #7c3aed;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+    <h1>{{ title }}</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Сохранить</button>
+        <a href="{% url 'manage_games' %}">Назад</a>
+    </form>
+</div>
+
+</body>
+</html>
