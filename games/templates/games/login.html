@@ -1,0 +1,68 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход — GameHub</title>
+    <style>
+        body {
+            background: #101014;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background: #1c1c24;
+            padding: 35px;
+            border-radius: 15px;
+            width: 320px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #7c5cff;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            background: #292933;
+            border: 1px solid #444;
+            border-radius: 7px;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #7c5cff;
+            border: none;
+            border-radius: 7px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>GameHub</h1>
+        <p>Вход в панель управления</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView
 from games.views import (
     home, game_detail,
     manage_games, add_game,
@@ -16,6 +17,11 @@ urlpatterns = [
     path('manage/add/', add_game, name='add_game'),
     path('manage/edit/<int:game_id>/', edit_game, name='edit_game'),
     path('manage/delete/<int:game_id>/', delete_game, name='delete_game'),
+    path('login/', LoginView.as_view(
+        template_name='games/login.html'
+    ), name='login'),
+
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
 
 if settings.DEBUG:
