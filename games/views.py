@@ -39,22 +39,11 @@ def add_game(request):
     form = GameForm(request.POST or None, request.FILES or None)
 
     if form.is_valid():
-        form.save()
+        game = form.save()
+        print("ИГРА СОХРАНЕНА:", game.name)
         return redirect('manage_games')
-
-    return render(request, 'games/game_form.html', {
-        'form': form,
-        'title': 'Добавить игру'
-    })
-
-
-@admin_required
-def add_game(request):
-    form = GameForm(request.POST or None, request.FILES or None)
-
-    if form.is_valid():
-        form.save()
-        return redirect('manage_games')
+    else:
+        print("ОШИБКИ ФОРМЫ:", form.errors)
 
     return render(request, 'games/game_form.html', {
         'form': form,
