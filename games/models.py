@@ -12,9 +12,15 @@ class Developer(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
 
+    def __str__(self):
+        return self.name
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
 
 
 class Game(models.Model):
