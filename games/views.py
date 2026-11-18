@@ -12,18 +12,15 @@ def home(request):
         'games': games
     })
 
+
 def game_detail(request, game_id):
     game = get_object_or_404(Game, id=game_id)
+    return render(request, 'games/game_detail.html', {'game': game})
 
-    return render(request, 'games/game_detail.html', {
-        'game': game
-    })
 
-# Проверка доступа к админ-панели
 admin_required = user_passes_test(lambda user: user.is_staff)
 
 
-# Главная страница админки
 @admin_required
 def manage_games(request):
     games = Game.objects.all()
@@ -33,7 +30,6 @@ def manage_games(request):
     })
 
 
-# Добавление игры
 @admin_required
 def add_game(request):
     form = GameForm(request.POST or None, request.FILES or None)
@@ -69,6 +65,7 @@ def edit_game(request, game_id):
         'form': form,
         'title': 'Изменить игру'
     })
+
 
 @admin_required
 def delete_game(request, game_id):

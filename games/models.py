@@ -32,7 +32,6 @@ class Game(models.Model):
     release_date = models.DateField()
     cover = models.ImageField(upload_to='game_covers/', blank=True, null=True)
 
-
 class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
