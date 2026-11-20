@@ -2,14 +2,52 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import user_passes_test
 from .forms import GameForm
 from django.shortcuts import render, get_object_or_404
-from .models import Game
+from .models import Game, Developer, Genre
 
 
 def home(request):
     games = Game.objects.all()
 
+    search = request.GET.get('search', '')
+    developer = request.GET.get('developer', '')
+    genre = request.GET.get('genre', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    sort = request.GET.get('sort', '')
+
+    if search:
+        games = games.filter(name__icontains=search)
+
+    if developer:
+        games = games.filter(developer_id=developer)
+
+    if genre:
+        games = games.filter(genres__id=genre)
+
+    if min_price:
+        games = games.filter(price__gte=min_price)
+
+    if max_price:
+        games = games.filter(price__lte=max_price)
+
+    if sort == 'price_asc':
+        games = games.order_by('price')
+
+    elif sort == 'price_desc':
+        games = games.order_by('-price')
+
+    elif sort == 'name':
+        games = games.order_by('name')
+
+    elif sort == 'date':
+        games = games.order_by('-release_date')
+
+    games = games.distinct()
+
     return render(request, 'games/home.html', {
-        'games': games
+        'games': games,
+        'developers': Developer.objects.all(),
+        'genres': Genre.objects.all(),
     })
 
 

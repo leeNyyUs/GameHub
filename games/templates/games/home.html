@@ -132,6 +132,73 @@
             font-size: 15px;
         }
 
+        /* ADVANCED SEARCH */
+
+.search-container {
+    background: #191923;
+    border: 1px solid #292936;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.search-container h3 {
+    margin-bottom: 20px;
+    color: #a78bfa;
+}
+
+.search-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.search-form input,
+.search-form select {
+    width: 100%;
+    padding: 13px;
+    background: #0d0d12;
+    border: 1px solid #30303d;
+    border-radius: 8px;
+    color: white;
+    outline: none;
+}
+
+.search-form input:focus,
+.search-form select:focus {
+    border-color: #8b5cf6;
+}
+
+.search-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.search-buttons button,
+.search-buttons a {
+    padding: 13px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    color: white;
+}
+
+.search-buttons button {
+    background: #7950e8;
+}
+
+.search-buttons a {
+    background: #30303d;
+}
+
+@media (max-width: 700px) {
+    .search-form {
+        grid-template-columns: 1fr;
+    }
+}
+
         .search:focus {
             border-color: #8b5cf6;
         }
@@ -314,12 +381,87 @@
             <h2>Популярные <span>игры</span></h2>
         </div>
 
+        <div class="search-container">
+    <h3>Расширенный поиск</h3>
+
+    <form method="GET" class="search-form">
+
         <input
-                type="text"
-                class="search"
-                id="search"
-                placeholder="Поиск игры..."
+            type="text"
+            name="search"
+            placeholder="Название игры..."
+            value="{{ request.GET.search }}"
         >
+
+        <select name="developer">
+            <option value="">Все разработчики</option>
+
+            {% for developer in developers %}
+                <option value="{{ developer.id }}"
+                    {% if request.GET.developer == developer.id|stringformat:"s" %}selected{% endif %}>
+                    {{ developer.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="genre">
+            <option value="">Все жанры</option>
+
+            {% for genre in genres %}
+                <option value="{{ genre.id }}"
+                    {% if request.GET.genre == genre.id|stringformat:"s" %}selected{% endif %}>
+                    {{ genre.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <input
+            type="number"
+            name="min_price"
+            placeholder="Цена от"
+            min="0"
+            value="{{ request.GET.min_price }}"
+        >
+
+        <input
+            type="number"
+            name="max_price"
+            placeholder="Цена до"
+            min="0"
+            value="{{ request.GET.max_price }}"
+        >
+
+        <select name="sort">
+            <option value="">Сортировка</option>
+
+            <option value="price_asc"
+                {% if request.GET.sort == 'price_asc' %}selected{% endif %}>
+                Сначала дешёвые
+            </option>
+
+            <option value="price_desc"
+                {% if request.GET.sort == 'price_desc' %}selected{% endif %}>
+                Сначала дорогие
+            </option>
+
+            <option value="name"
+                {% if request.GET.sort == 'name' %}selected{% endif %}>
+                По названию
+            </option>
+
+            <option value="date"
+                {% if request.GET.sort == 'date' %}selected{% endif %}>
+                По дате выхода
+            </option>
+        </select>
+
+        <div class="search-buttons">
+            <button type="submit">Найти</button>
+            <a href="{% url 'home' %}">Сбросить</a>
+        </div>
+
+    </form>
+</div>
 
         <div class="games-grid" id="games-grid">
 
@@ -346,7 +488,7 @@
                     </p>
 
                     <div class="game-bottom">
-                        <span class="price">{{ game.price }} сум</span>
+                        <span class="price">{{ game.price }}$ </span>
                         <a href="{% url 'game_detail' game.id %}" class="buy-btn">Подробнее</a></div>
 
                 </div>
@@ -371,25 +513,6 @@
 <footer id="footer">
     <p>© 2026 GameStore. Все права защищены.</p>
 </footer>
-
-<script>
-    const search = document.getElementById('search');
-    const cards = document.querySelectorAll('.game-card');
-
-    search.addEventListener('input', function() {
-        const value = this.value.toLowerCase();
-
-        cards.forEach(card => {
-            const name = card.querySelector('h3').textContent.toLowerCase();
-            const genre = card.querySelector('.genre').textContent.toLowerCase();
-
-            card.style.display =
-                name.includes(value) || genre.includes(value)
-                ? ''
-                : 'none';
-        });
-    });
-</script>
 
 </body>
 </html>
