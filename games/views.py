@@ -1,7 +1,9 @@
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
+
 from .forms import GameForm
-from django.shortcuts import render, get_object_or_404
 from .models import Game, Developer, Genre
 
 
@@ -42,10 +44,18 @@ def home(request):
     elif sort == 'date':
         games = games.order_by('-release_date')
 
+    else:
+        games = games.order_by('id')
+
     games = games.distinct()
 
+    paginator = Paginator(games, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'games/home.html', {
-        'games': games,
+        'games': page_obj,
+        'page_obj': page_obj,
         'developers': Developer.objects.all(),
         'genres': Genre.objects.all(),
     })
@@ -61,8 +71,7 @@ admin_required = user_passes_test(lambda user: user.is_staff)
 
 @admin_required
 def manage_games(request):
-    games = Game.objects.all()
-
+    games = Game.objects.select_related('developer').prefetch_related('genres')
     return render(request, 'games/manage.html', {
         'games': games
     })

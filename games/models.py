@@ -24,12 +24,16 @@ class Genre(models.Model):
 
 
 class Game(models.Model):
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE)
+    developer = models.ForeignKey(
+        Developer,
+        on_delete=models.CASCADE,
+        db_index=True
+    )
     genres = models.ManyToManyField(Genre)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, db_index=True)
     description = models.TextField()
-    price = models.IntegerField()
-    release_date = models.DateField()
+    price = models.IntegerField(db_index=True)
+    release_date = models.DateField(db_index=True)
     cover = models.ImageField(upload_to='game_covers/', blank=True, null=True)
 
 class Purchase(models.Model):
