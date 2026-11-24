@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -41,6 +40,46 @@
             border-radius: 8px;
             margin-top: 15px;
         }
+
+        .like-button {
+            background: #252525;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .like-button:hover {
+            transform: scale(1.05);
+            background: #383838;
+        }
+
+                .like-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.like-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #252525;
+    color: white;
+    border: 1px solid #444;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.like-button:hover {
+    background: #383838;
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body>
@@ -48,18 +87,32 @@
     <h1>{{ game.name }}</h1>
 
     {% if game.cover %}
-        <img src="{{ game.cover.url }}" alt="{{ game.name }}">
+    <img src="{{ game.cover.url }}" alt="{{ game.name }}">
     {% endif %}
 
     <p><strong>Разработчик:</strong> {{ game.developer.name }}</p>
 
     <p><strong>Жанры:</strong>
         {% for genre in game.genres.all %}
-            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+        {{ genre.name }}{% if not forloop.last %}, {% endif %}
         {% endfor %}
     </p>
 
     <p><strong>Описание:</strong> {{ game.description }}</p>
+    <div class="like-section">
+        <form method="POST" action="{% url 'toggle_like' game.id %}">
+            {% csrf_token %}
+
+            <button type="submit" class="like-button">
+                {% if user_liked %}
+                ❤️
+                {% else %}
+                🤍
+                {% endif %}
+                {{ likes_count }}
+            </button>
+        </form>
+    </div>
     <p><strong>Цена:</strong> ${{ game.price }}</p>
     <p><strong>Дата выхода:</strong> {{ game.release_date }}</p>
 

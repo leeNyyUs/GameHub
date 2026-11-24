@@ -47,3 +47,13 @@ class Review(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     rating = models.IntegerField()
     comment = models.TextField()
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'game')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.game.name}"
