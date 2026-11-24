@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class User(models.Model):
@@ -49,7 +50,10 @@ class Review(models.Model):
     comment = models.TextField()
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
     class Meta:
