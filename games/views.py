@@ -1,16 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
-from django.db.models import Count
-
 from .forms import GameForm
-from .models import Game, Developer, Genre, Like
+from .models import Game, Developer, Genre
 
 
 def home(request):
-    games = Game.objects.annotate(
-        likes_count=Count('like')
-    )
+    games = Game.objects.all()
+
     search = request.GET.get('search', '')
     developer = request.GET.get('developer', '')
     genre = request.GET.get('genre', '')
@@ -65,22 +62,12 @@ def home(request):
     })
 
 
+
 def game_detail(request, game_id):
     game = get_object_or_404(Game, id=game_id)
 
-    likes_count = Like.objects.filter(game=game).count()
-
-    user_liked = False
-    if request.user.is_authenticated:
-        user_liked = Like.objects.filter(
-            game=game,
-            user=request.user
-        ).exists()
-
     return render(request, 'games/game_detail.html', {
         'game': game,
-        'likes_count': likes_count,
-        'user_liked': user_liked,
     })
 
 
@@ -143,17 +130,9 @@ def delete_game(request, game_id):
 
 
 def toggle_like(request, game_id):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    if request.method == 'POST':
+        game = get_object_or_404(Game, id=game_id)
+        game.likes_count += 1
+        game.save(update_fields=['likes_count'])
 
-    game = get_object_or_404(Game, id=game_id)
-
-    like, created = Like.objects.get_or_create(
-        user=request.user,
-        game=game
-    )
-
-    if not created:
-        like.delete()
-
-    return redirect('game_detail', game_id=game.id)
+    return redirect('game_detail', game_id=game_id)
